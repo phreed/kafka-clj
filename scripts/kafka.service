@@ -1,0 +1,14 @@
+[Unit]
+Description=Daemon for Kafka stream processor
+Requires=zookeeper.service
+
+[Service]
+WorkingDirectory=/opt/kafka/kafka_2.12-0.10.2.0/
+ExecStart=/opt/kafka/kafka_2.12-0.10.2.0/bin/kafka-server-start.sh ./config/server.properties
+Restart=no
+User=phred
+Group=phred
+
+
+[Install]
+WantedBy=multi-user.target

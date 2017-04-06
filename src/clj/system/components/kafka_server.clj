@@ -18,6 +18,8 @@
             KafkaConsumer
             OffsetAndMetadata)))
 
+(def *wire-encoding* :json)
+
 (defrecord Kafka [main-topic bootstrap-servers value-serializer key-serializer]
   component/Lifecycle
   (start [component]
@@ -65,7 +67,7 @@
    which will eventually contain the response information."
   [component record]
   (let [buffer (ByteArrayOutputStream. 4096)
-        writer (transit/writer buffer :json)]
+        writer (transit/writer buffer *wire-encoding*)]
     (transit/write writer record)
     (let [record-str (.toString buffer)
           prod-record (ProducerRecord. (:main-topic component) record-str)
@@ -79,9 +81,11 @@
 
 (defn- process-batch
   [batch action]
-  (loop [item (first batch)
+  (loop [record (first batch)
          remainder (rest batch)]
-    (action item)
+    (let [buffer (ByteArrayInputStream. (.toByteArray record))
+          reader (transit/reader buffer *wire-encoding*)]
+       (action (transit/read reader)))
     (recur (first batch) 
            (rest batch))))
 

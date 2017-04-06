@@ -3,17 +3,10 @@
   (:require
     [system.core :refer [defsystem]]
     (system.components
-      [kafka-server :refer [new-kafka-server]])
-    [environ.core :refer [env]]
-    [cognitect.transit :as transit])
+      [kafka-server :refer [new-kafka-server]]))
   (:import (org.apache.kafka.common.serialization
               ByteArraySerializer ByteArrayDeserializer
               StringSerializer StringDeserializer)))
-
-;; https://techblog.roomkey.com/posts/clojure-kafka.html
-;; http://kafka.apache.org/090/javadoc/index.html?overview-summary.html
-;; http://blog.klipse.tech/clojure/2016/09/22/transit-clojure.html
-;; https://github.com/cognitect/transit-clj
 
 (defsystem dev-system
   [:kafka-db

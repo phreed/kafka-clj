@@ -9,7 +9,7 @@
    :nil       nil
    :true      true
    :false     false
-   :string    "junk bar"})
+   :string    "salad bar"})
 
 (server/send-message (:kafka-db system) data-bytes)
 

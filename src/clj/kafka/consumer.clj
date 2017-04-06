@@ -4,6 +4,6 @@
             [system.components.kafka-server :as server]
             [clojure.pprint :as pp]))
 
-(future 
-  (server/receive-messages (:kafka-db system) 
-     (fn [item] (println item))))
+(future
+  (server/receive-messages (:kafka-db system)
+     (fn [item] (pp/pprint ["junk" item]))))

@@ -4,13 +4,15 @@
  :resource-paths #{"src/res"}
  :source-paths #{"src/clj"}
  :dependencies
-   '[[org.clojure/clojure "1.9.0-alpha15"]
+   '[;[org.clojure/clojure "1.9.0-alpha15"]
 
      [org.danielsz/system "0.4.0"]
-     [adzerk/boot-reload "0.4.12" :scope "test"]
+     [adzerk/boot-reload "0.5.1" :scope "test"]
      [environ "1.1.0"]
      [boot-environ "1.1.0"]
      [org.clojure/tools.namespace "0.3.0-alpha3"]
+     ;; https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+     [ch.qos.logback/logback-classic "1.2.3"]
 
      [proto-repl "0.3.1"]
      [proto-repl-charts "0.3.2"
@@ -32,7 +34,8 @@
  "This task is intended to be used in conjunction with
   the proto-repl plugin for the atom.io editor."
  []
- (set-env! :init-ns 'user)
+ (set-env! :init-ns 'user
+           :source-paths #(conj % "src/clj-dev"))
  (comp
    (environ :env {:thing "that"})
    (watch :verbose true)
@@ -41,3 +44,9 @@
            ;; :files ["core.clj"])
    (reload)
    (repl :server true)))
+
+(deftask prod
+  "This task makes this a stand-alone operation"
+  []
+  (comp
+     (run :main-namespace "kafka.core")))

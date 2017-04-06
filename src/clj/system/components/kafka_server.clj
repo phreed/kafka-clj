@@ -3,7 +3,8 @@
             [cognitect.transit :as transit]
             [clojure.pprint :as pp])
   (:import (java.io
-            ByteArrayOutputStream)
+            ByteArrayOutputStream
+            ByteArrayInputStream)
            (org.apache.kafka.common
             TopicPartition
             KafkaException)
@@ -18,7 +19,7 @@
             KafkaConsumer
             OffsetAndMetadata)))
 
-(def *wire-encoding* :json)
+(def wire-encoding :json)
 
 (defrecord Kafka [main-topic bootstrap-servers value-serializer key-serializer]
   component/Lifecycle
@@ -67,7 +68,7 @@
    which will eventually contain the response information."
   [component record]
   (let [buffer (ByteArrayOutputStream. 4096)
-        writer (transit/writer buffer *wire-encoding*)]
+        writer (transit/writer buffer wire-encoding)]
     (transit/write writer record)
     (let [record-str (.toString buffer)
           prod-record (ProducerRecord. (:main-topic component) record-str)
@@ -84,7 +85,7 @@
   (loop [record (first batch)
          remainder (rest batch)]
     (let [buffer (ByteArrayInputStream. (.toByteArray record))
-          reader (transit/reader buffer *wire-encoding*)]
+          reader (transit/reader buffer wire-encoding)]
        (action (transit/read reader)))
     (recur (first batch) 
            (rest batch))))

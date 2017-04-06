@@ -2,11 +2,11 @@
 Description=Daemon for generating starting the zookeeper which handles kafka metadata
 
 [Service]
-WorkingDirectory=/opt/kafka/kafka_2.11-0.10.1.0/
-ExecStart=/opt/kafka/kafka_2.11-0.10.1.0/bin/zookeeper-server-start.sh ./config/zookeeper.properties
+WorkingDirectory=/home/kafka/kafka_2.11-0.10.2.0/ 
+ExecStart=/home/kafka/kafka_2.11-0.10.1.0/bin/zookeeper-server-start.sh ./config/zookeeper.properties
 Restart=no
-User=phred
-Group=phred
+User=fred
+Group=fred
 
 [Install]
 WantedBy=multi-user.target

@@ -13,6 +13,7 @@
      [org.clojure/tools.namespace "0.3.0-alpha3"]
      ;; https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
      [ch.qos.logback/logback-classic "1.2.3"]
+     [org.clojure/tools.logging "0.3.1"]
 
      [proto-repl "0.3.1"]
      [proto-repl-charts "0.3.2"
@@ -34,8 +35,7 @@
  "This task is intended to be used in conjunction with
   the proto-repl plugin for the atom.io editor."
  []
- (set-env! :init-ns 'user
-           :source-paths #(conj % "src/clj-dev"))
+ (set-env! :source-paths #(conj % "src/clj-dev"))
  (comp
    (environ :env {:thing "that"})
    (watch :verbose true)
@@ -43,7 +43,8 @@
            :auto true)
            ;; :files ["core.clj"])
    (reload)
-   (repl :server true)))
+   (repl :server true
+         :init-ns 'user)))
 
 (deftask prod
   "This task makes this a stand-alone operation"

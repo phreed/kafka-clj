@@ -1,7 +1,8 @@
 (ns system.components.kafka-server
   (:require [com.stuartsierra.component :as component]
             [cognitect.transit :as transit]
-            [clojure.pprint :as pp])
+            [clojure.pprint :as pp]
+            [clojure.tools.logging :as log])
   (:import (java.io
             ByteArrayOutputStream
             ByteArrayInputStream)
@@ -67,13 +68,14 @@
   "Send the given record asynchronously and return a future
    which will eventually contain the response information."
   [component record]
+  (log/info "sending" (with-out-str (pp/pprint record)))
   (let [buffer (ByteArrayOutputStream. 4096)
         writer (transit/writer buffer wire-encoding)]
     (transit/write writer record)
-    (let [record-str (.toString buffer)
-          prod-record (ProducerRecord. (:main-topic component) record-str)
+    (let [record-bytes (.toByteArray buffer)
+          prod-record (ProducerRecord. (:main-topic component) record-bytes)
           res (.send (:producer component) prod-record)]
-      (println "message result " res " " record))))
+      (log/info "result" res))))
 
 (defn metrics
   "Return a map of metrics maintained by the producer"
@@ -84,11 +86,16 @@
   [batch action]
   (loop [record (first batch)
          remainder (rest batch)]
-    (let [buffer (ByteArrayInputStream. (.toByteArray record))
-          reader (transit/reader buffer wire-encoding)]
-       (action (transit/read reader)))
-    (recur (first batch) 
-           (rest batch))))
+    (let [topic (.topic record)
+          key (.key record)
+          value (.value record)
+          buffer (ByteArrayInputStream. value)
+          reader (transit/reader buffer wire-encoding)
+          item (transit/read reader)]
+       (action item))
+    (when (seq remainder)
+      (Thread/sleep 1000)
+      (recur (first remainder) (rest remainder)))))
 
 (defn- consume-lazy [consumer min-poll-size]
   (lazy-seq

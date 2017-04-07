@@ -13,8 +13,8 @@
     (new-kafka-server
       "vu-isis_gme_brass_immortals"
       "localhost:9092"
-      {:to StringSerializer
-       :from StringDeserializer}
+      {:to ByteArraySerializer
+       :from ByteArrayDeserializer}
       {:to ByteArraySerializer
        :from ByteArrayDeserializer})])
 
@@ -24,7 +24,7 @@
     (new-kafka-server
       "vu-isis_gme_brass_immortals"
       "localhost:9092"
-      {:to StringSerializer
-       :from StringDeserializer}
+      {:to ByteArraySerializer
+       :from ByteArrayDeserializer}
       {:to ByteArraySerializer
        :from ByteArrayDeserializer})])

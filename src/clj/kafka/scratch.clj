@@ -7,4 +7,4 @@
 
 (macroexpand '(bean java.awt.Color/black))
 
-(doc 'bean)
+(doc doc)

@@ -16,6 +16,9 @@
   </appender>
 
   <logger name="kafka-coordinator-heartbeat-thread" level="INFO"/>
+  <logger name="org.apache.kafka.clients.consumer.ConsumerConfig" level="WARN"/>
+  <logger name="org.apache.kafka.clients.producer.ProducerConfig" level="WARN"/>
+  <logger name="org.apache.kafka.common.utils.AppInfoParser" level="WARN"/>
 
   <root level="INFO">
     <appender-ref ref="CONSOLE"/>

@@ -11,7 +11,7 @@
 (defsystem dev-system
   [:kafka-db
     (new-kafka-server
-      "vu-isis_gme_brass_immortals"
+      "darpa.brass.immortals.vu.isis.gme"
       "localhost:9092"
       {:to ByteArraySerializer
        :from ByteArrayDeserializer}
@@ -22,7 +22,7 @@
 (defsystem prod-system
   [:kafka-db
     (new-kafka-server
-      "vu-isis_gme_brass_immortals"
+      "darpa.brass.immortals.vu.isis.gme"
       "localhost:9092"
       {:to ByteArraySerializer
        :from ByteArrayDeserializer}

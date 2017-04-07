@@ -18,7 +18,9 @@
             WakeupException)
            (org.apache.kafka.clients.consumer
             KafkaConsumer
-            OffsetAndMetadata)))
+            OffsetAndMetadata)
+           (com.fasterxml.jackson.core
+             JsonParseException)))
 
 (def wire-encoding :json)
 
@@ -89,10 +91,14 @@
     (let [topic (.topic record)
           key (.key record)
           value (.value record)
-          buffer (ByteArrayInputStream. value)
-          reader (transit/reader buffer wire-encoding)
-          item (transit/read reader)]
-       (action item))
+          buffer (ByteArrayInputStream. value)]
+        (log/debug "reading value" value)
+        (try
+          (let [reader (transit/reader buffer wire-encoding)
+                item (transit/read reader)]
+             (action item))
+          (catch JsonParseException ex
+             (log/warn "problem parsing message" (.message ex)))))
     (when (seq remainder)
       (Thread/sleep 1000)
       (recur (first remainder) (rest remainder)))))
